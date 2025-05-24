@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Smile } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Input } from "~/components/ui/input";
@@ -13,6 +13,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
+import type { EmojiClickData } from "emoji-picker-react";
+
+// Dynamically import emoji picker to avoid SSR issues
+const EmojiPicker = dynamic(
+  () => import("emoji-picker-react").then((mod) => mod.default),
+  { ssr: false }
+);
 
 const messageSchema = z.object({
   content: z.string().min(1, "Message cannot be empty"),
@@ -61,6 +70,11 @@ export function ChatInterface({ toUserId }: ChatInterfaceProps) {
     });
   };
 
+  const onEmojiClick = (emojiData: EmojiClickData) => {
+    const currentContent = form.getValues("content");
+    form.setValue("content", currentContent + emojiData.emoji);
+  };
+
   if (!messages || !user) return null;
 
   return (
@@ -97,7 +111,7 @@ export function ChatInterface({ toUserId }: ChatInterfaceProps) {
                     : "bg-primary text-primary-foreground"
                 }`}
               >
-                <p>{message.content}</p>
+                <p className="whitespace-pre-wrap">{message.content}</p>
                 <p className="mt-1 text-xs opacity-70">
                   {new Date(message.createdAt).toLocaleTimeString()}
                 </p>
@@ -115,11 +129,28 @@ export function ChatInterface({ toUserId }: ChatInterfaceProps) {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input
-                      placeholder="Type a message..."
-                      {...field}
-                      disabled={isPending}
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder="Type a message..."
+                        {...field}
+                        disabled={isPending}
+                      />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="absolute right-2 top-1/2 -translate-y-1/2"
+                          >
+                            <Smile className="h-5 w-5" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="end">
+                          <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
