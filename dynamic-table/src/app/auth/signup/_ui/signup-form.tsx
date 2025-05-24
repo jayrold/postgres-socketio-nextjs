@@ -6,7 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "~/trpc/react";
-
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import { signUpSchema, type SignUpSchema } from "~/server/auth/schema";
 
 export function SignUpForm() {
@@ -53,15 +55,14 @@ export function SignUpForm() {
       </div>
 
       <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-        <div className="-space-y-px rounded-md shadow-sm">
+        <div className="-space-y-px flex flex-col gap-2">
           <div>
-            <label htmlFor="name" className="sr-only">
+            <Label htmlFor="name" className="sr-only">
               Name
-            </label>
-            <input
+            </Label>
+            <Input
               {...register("name")}
               type="text"
-              className="relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Name"
             />
             {errors.name && (
@@ -70,13 +71,12 @@ export function SignUpForm() {
           </div>
 
           <div>
-            <label htmlFor="email" className="sr-only">
+            <Label htmlFor="email" className="sr-only">
               Email address
-            </label>
-            <input
+            </Label>
+            <Input
               {...register("email")}
               type="email"
-              className="relative block w-full border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Email address"
             />
             {errors.email && (
@@ -85,13 +85,12 @@ export function SignUpForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="sr-only">
+            <Label htmlFor="password" className="sr-only">
               Password
-            </label>
-            <input
+            </Label>
+            <Input
               {...register("password")}
               type="password"
-              className="relative block w-full border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Password"
             />
             {errors.password && (
@@ -102,13 +101,12 @@ export function SignUpForm() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="sr-only">
+            <Label htmlFor="confirmPassword" className="sr-only">
               Confirm Password
-            </label>
-            <input
+            </Label>
+            <Input
               {...register("confirmPassword")}
               type="password"
-              className="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Confirm Password"
             />
             {errors.confirmPassword && (
@@ -130,13 +128,13 @@ export function SignUpForm() {
         )}
 
         <div>
-          <button
+          <Button
             type="submit"
             disabled={signup.isPending}
-            className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+            className="w-full"
+            >
             {signup.isPending ? "Creating account..." : "Sign up"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>
