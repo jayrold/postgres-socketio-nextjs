@@ -1,11 +1,21 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const { Client } = require('pg');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import pkg from 'pg';
+const { Client } = pkg;
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+
+const io = new Server(server, {
+    cors: {
+      origin: [
+        "http://localhost:3000",
+        "http://host.docker.internal:3000"
+      ],
+      methods: ["GET", "POST"],
+    },
+  });
 
 const port = process.env.REALTIME_PORT || 4001;
 
