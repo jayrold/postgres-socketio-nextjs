@@ -40,7 +40,7 @@ export function SignInForm() {
       }
 
       // Redirect to the callback URL or dashboard
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+      const callbackUrl = searchParams.get("callbackUrl") ?? "/";
       router.push(callbackUrl);
     } catch (err) {
       setError("An unexpected error occurred");

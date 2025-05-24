@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
+import { SessionProvider } from "~/contexts/session-context";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const session = await auth();
-    console.log('session', session);
 
     if (!session?.user) {
         redirect("/auth/signin");
     }
 
-    return <>{children}</>
+    return (
+        <SessionProvider session={session}>
+            {children}
+        </SessionProvider>
+    );
 }  
