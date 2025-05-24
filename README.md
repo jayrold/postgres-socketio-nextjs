@@ -18,7 +18,6 @@ Inspired by Supabase's realtime feature. I wanted to build a lightweight clone f
 - Table filtering
 - Docker-based local development
 - Real-time data synchronization
-- Clean and modern UI with Tailwind CSS
 - Scalable architecture
 - Easy setup with Docker Compose
 
@@ -37,9 +36,7 @@ The project consists of three main components:
    - Manages client connections and subscriptions
 
 3. **Next.js Frontend**
-   - Modern React-based UI
    - Real-time data updates
-   - Responsive design with Tailwind CSS
    - Table filtering and data visualization
 
 ## Quick Start
@@ -146,10 +143,6 @@ POSTGRES_DB=your_database
 - [ ] Support for more database operations
 - [ ] Add monitoring and logging
 - [ ] Implement caching layer
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Author
 
