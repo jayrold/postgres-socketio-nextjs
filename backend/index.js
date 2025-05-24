@@ -1,31 +1,52 @@
-import express from 'express';
-import pkg from 'pg';
-
-const { Pool } = pkg;
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const { Client } = require('pg');
 
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
+const io = new Server(server);
 
-app.use(express.json());
+const port = process.env.REALTIME_PORT || 4001;
 
-// PostgreSQL pool using environment variables
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+// PostgreSQL client config (adjust according to your .env or setup)
+const pgClient = new Client({
+  host: process.env.DB_HOST || 'host.docker.internal',
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_NAME || 'realtime_db',
+  port: process.env.DB_PORT || 15432,
 });
 
-app.get('/', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ time: result.rows[0].now });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Database error');
-  }
-});
+async function start() {
+  await pgClient.connect();
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  // Listen on channels you want (e.g. 'messages_changes')
+  await pgClient.query('LISTEN messages_changes');
+  // Add more channels if needed
+  // await pgClient.query('LISTEN posts_changes');
+
+  // When a notification comes in from Postgres
+  pgClient.on('notification', (msg) => {
+    try {
+      const payload = JSON.parse(msg.payload);
+      // Emit via socket.io to all connected clients
+      io.emit(msg.channel, payload);
+      console.log(`Sent update on channel ${msg.channel}`, payload);
+    } catch (err) {
+      console.error('Failed to parse notification payload:', err);
+    }
+  });
+
+  // Start HTTP + Socket.io server
+  server.listen(port, () => {
+    console.log(`Server listening on http://localhost:${port}`);
+  });
+}
+
+start().catch((err) => console.error('Failed to start:', err));
+
+// Optional: basic express route for testing
+app.get('/', (req, res) => {
+  res.send('Realtime server is running');
 });
