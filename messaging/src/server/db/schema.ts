@@ -107,3 +107,31 @@ export const verificationTokens = createTable(
   }),
   (t) => [primaryKey({ columns: [t.identifier, t.token] })],
 );
+
+export const messages = createTable("chat_message", (d) => ({
+  id: d
+    .varchar({ length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  content: d.text().notNull(),
+  fromUserId: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  toUserId: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  readAt: d.timestamp({ withTimezone: true }),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  fromUser: one(users, { fields: [messages.fromUserId], references: [users.id] }),
+  toUser: one(users, { fields: [messages.toUserId], references: [users.id] }),
+}));
