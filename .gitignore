@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+
+# Docker
+**/node_modules/
+**/dist/
+**/build/
+*.log
+
+# Docker Compose overrides or local config files
+docker-compose.override.yml
+
+# pgAdmin data (optional, because it's a volume)
+pgadmin_data/
+
+# Postgres data (optional, because it's a volume)
+pgdata/
+
+# VSCode editor config
+.vscode/
+
+# Mac OS files
+.DS_Store
