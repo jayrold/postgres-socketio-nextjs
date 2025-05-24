@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 interface Message {
   id: number;
@@ -10,19 +10,25 @@ interface Message {
   [key: string]: any;
 }
 
-let socket: Socket;
-
 export default function RealtimeClient() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4001');
-
-    socket.on('messages_changes', (data: Message) => {
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4001');
+  
+    // Subscribe to the `messages` table
+    socket.on('connect', () => {
+      socket.emit('subscribe', { table: 'messages' });
+  
+      // Optional: subscribe to specific user_id
+      // socket.emit('subscribe', { table: 'messages', user_id: 123 });
+    });
+  
+    socket.on('messages', (data) => {
       console.log('Realtime message:', data);
       setMessages((prev) => [data, ...prev]);
     });
-
+  
     return () => {
       socket.disconnect();
     };

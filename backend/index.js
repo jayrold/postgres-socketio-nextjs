@@ -28,6 +28,8 @@ const pgClient = new Client({
   port: process.env.DB_PORT || 15432,
 });
 
+const subscriptions = new Map(); // Map<socket.id, {table, user_id?}>
+
 async function start() {
   await pgClient.connect();
 
@@ -36,13 +38,37 @@ async function start() {
   // Add more channels if needed
   // await pgClient.query('LISTEN posts_changes');
 
-  // When a notification comes in from Postgres
+  // Socket.io connection handling
+  io.on('connection', (socket) => {
+    console.log('Client connected:', socket.id);
+
+    // When client subscribes
+    socket.on('subscribe', (payload) => {
+      subscriptions.set(socket.id, payload);
+      console.log(`Client ${socket.id} subscribed to`, payload);
+    });
+
+    socket.on('disconnect', () => {
+      subscriptions.delete(socket.id);
+      console.log('Client disconnected:', socket.id);
+    });
+  });
+
+  // PG NOTIFICATION handler
   pgClient.on('notification', (msg) => {
     try {
-      const payload = JSON.parse(msg.payload);
-      // Emit via socket.io to all connected clients
-      io.emit(msg.channel, payload);
-      console.log(`Sent update on channel ${msg.channel}`, payload);
+      const payload = JSON.parse(msg.payload); // { operation, table, data }
+
+      for (const [socketId, sub] of subscriptions.entries()) {
+        if (sub.table === payload.table) {
+          // Optional user filtering:
+          if (sub.user_id && payload.data.user_id !== sub.user_id) continue;
+
+          io.to(socketId).emit(payload.table, payload);
+        }
+      }
+
+      console.log(`Broadcasted to filtered clients on channel ${msg.channel}`, payload);
     } catch (err) {
       console.error('Failed to parse notification payload:', err);
     }
