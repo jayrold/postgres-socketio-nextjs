@@ -7,15 +7,14 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 
 export function ChatList() {
   const router = useRouter();
-  const { data: users } = api.message.getUsers.useQuery();
-  const { data: unreadCounts } = api.message.getUnreadMessagesCount.useQuery();
+  const { data: chatUsers } = api.message.getUsers.useQuery();
 
-  if (!users) return null;
+  if (!chatUsers) return null;
 
   return (
     <ScrollArea className="h-[calc(100vh-4rem)]">
       <div className="space-y-2 p-4">
-        {users.map((user) => (
+        {chatUsers.map(({ user, latestMessage, unreadCount }) => (
           <button
             key={user.id}
             onClick={() => router.push(`/chat/${user.id}`)}
@@ -28,11 +27,19 @@ export function ChatList() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium leading-none">{user.name}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(latestMessage.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground line-clamp-1">
+                {latestMessage.content}
+              </p>
             </div>
-            {unreadCounts && unreadCounts > 0 && (
+            {unreadCount > 0 && (
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                {unreadCounts}
+                {unreadCount}
               </div>
             )}
           </button>

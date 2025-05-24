@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { api } from "~/trpc/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
