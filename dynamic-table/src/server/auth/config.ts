@@ -1,6 +1,8 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 import { db } from "~/server/db";
 import {
@@ -38,16 +40,41 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const user = await db.query.users.findFirst({
+          where: eq(users.email, credentials.email as string),
+        });
+
+        if (!user?.password) {
+          return null;
+        }
+
+        const isValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+        
+        if (!isValid) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      }
+    }),
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -63,5 +90,11 @@ export const authConfig = {
         id: user.id,
       },
     }),
+  },
+  pages: {
+    signIn: '/auth/signin',
+  },
+  session: {
+    strategy: "jwt",
   },
 } satisfies NextAuthConfig;
