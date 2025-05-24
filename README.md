@@ -9,7 +9,7 @@
 
 ## About
 
-Inspired by Supabase's realtime feature. I wanted to build a lightweight clone from scratch.
+Inspired by Supabase's realtime feature. I wanted to build a lightweight clone from scratch. This project demonstrates real-time data synchronization between PostgreSQL and a Next.js frontend using Socket.IO, showcasing modern web development practices and real-time application architecture.
 
 ## Features
 
@@ -17,6 +17,30 @@ Inspired by Supabase's realtime feature. I wanted to build a lightweight clone f
 - Support for multiple tables
 - Table filtering
 - Docker-based local development
+- Real-time data synchronization
+- Clean and modern UI with Tailwind CSS
+- Scalable architecture
+- Easy setup with Docker Compose
+
+## Architecture
+
+The project consists of three main components:
+
+1. **PostgreSQL Database**
+   - Uses LISTEN/NOTIFY for real-time events
+   - Custom triggers for table changes
+   - pgAdmin for database management
+
+2. **Node.js Socket.IO Server**
+   - Handles real-time communication
+   - Bridges PostgreSQL notifications to WebSocket clients
+   - Manages client connections and subscriptions
+
+3. **Next.js Frontend**
+   - Modern React-based UI
+   - Real-time data updates
+   - Responsive design with Tailwind CSS
+   - Table filtering and data visualization
 
 ## Quick Start
 
@@ -94,6 +118,22 @@ In your backend, listen to the PostgreSQL channel named:
 your_table_name_changes
 ```
 
+## Development
+
+### Prerequisites
+- Docker and Docker Compose
+- Node.js (v16 or higher)
+- npm or yarn
+- PostgreSQL (if running locally)
+
+### Environment Variables
+Create a `.env` file in the root directory with the following variables:
+```env
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_database
+```
+
 ## Future Work
 
 - [ ] Add authentication system
@@ -101,6 +141,15 @@ your_table_name_changes
 - [ ] Add more table filtering options
 - [ ] Improve error handling and reconnection logic
 - [ ] Add unit and integration tests
+- [ ] Implement data validation
+- [ ] Add rate limiting
+- [ ] Support for more database operations
+- [ ] Add monitoring and logging
+- [ ] Implement caching layer
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Author
 
@@ -108,4 +157,10 @@ Harold Jayson Caminero
 
 ## License
 
-MIT License - feel free to use this project for your own purposes. 
+MIT License - feel free to use this project for your own purposes.
+
+## Acknowledgments
+
+- Inspired by Supabase's realtime feature
+- Built with modern web technologies
+- Special thanks to the open-source community 
