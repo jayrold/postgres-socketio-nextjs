@@ -22,15 +22,18 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      email: string | null;
+      name: string | null;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    id?: string;
+    email?: string | null;
+    name?: string | null;
+  }
 }
 
 /**
@@ -72,6 +75,9 @@ export const authConfig = {
           id: user.id,
           email: user.email,
           name: user.name,
+          password: user.password,
+          emailVerified: user.emailVerified,
+          image: user.image,
         };
       }
     }),
@@ -83,13 +89,22 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email!;
+        session.user.name = token.name as string | null;
+      }
+      return session;
+    },
   },
   pages: {
     signIn: '/auth/signin',
@@ -97,4 +112,5 @@ export const authConfig = {
   session: {
     strategy: "jwt",
   },
+  secret: process.env.AUTH_SECRET,
 } satisfies NextAuthConfig;

@@ -1,5 +1,3 @@
-"use client";
-
 import { SignUpForm } from "./_ui/signup-form";
 
 export default function SignUpPage() {

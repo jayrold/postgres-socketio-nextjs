@@ -1,5 +1,3 @@
-"use client";
-
 import { SignInForm } from "./_ui/signin-form";
 
 export default function SignInPage() {
