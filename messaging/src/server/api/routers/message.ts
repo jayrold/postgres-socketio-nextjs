@@ -5,6 +5,21 @@ import { eq, and, or, not, sql, isNull, desc } from "drizzle-orm";
 import { users, messages } from "../../db/schema";
 
 export const messageRouter = createTRPCRouter({
+  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session.user.id;
+    
+    const allUsers = await ctx.db
+      .select({
+        id: users.id,
+        name: users.name,
+        image: users.image,
+      })
+      .from(users)
+      .where(not(eq(users.id, currentUserId)));
+
+    return allUsers;
+  }),
+
   getUsers: protectedProcedure.query(async ({ ctx }) => {
     const currentUserId = ctx.session.user.id;
     
