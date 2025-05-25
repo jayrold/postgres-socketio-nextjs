@@ -13,17 +13,17 @@ export function RealtimeMessages() {
     if (!session?.user?.id) return;
 
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4001');
+    const tableName = 'dynamic-table_chat_message';
     console.log('connecting...');
     socket.on('connect', () => {
-        socket.emit('subscribe', { table: 'dynamic-table_chat_message' });
-        console.log("subscribing");
+        socket.emit('subscribe', { table: tableName });
     
         // Optional: subscribe to specific user_id
         // socket.emit('subscribe', { table: 'messages', user_id: 123 });
       });
 
 
-    socket.on('messages', (data) => {
+    socket.on(tableName, (data) => {
       console.log('New realtime message:', data);
       
       // Invalidate relevant queries to trigger a refetch
