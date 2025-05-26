@@ -12,7 +12,7 @@ export function RealtimeMessages() {
   useEffect(() => {
     if (!session?.user?.id) return;
 
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4001');
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL ?? 'http://localhost:4001');
     const tableName = 'dynamic-table_chat_message';
     console.log('connecting...');
     socket.on('connect', () => {
@@ -27,9 +27,9 @@ export function RealtimeMessages() {
       console.log('New realtime message:', data);
       
       // Invalidate relevant queries to trigger a refetch
-      utils.message.getMessages.invalidate();
-      utils.message.getUnreadMessagesCount.invalidate();
-      utils.message.getUsers.invalidate();
+      void utils.message.getMessages.invalidate();
+      void utils.message.getUnreadMessagesCount.invalidate();
+      void utils.message.getUsers.invalidate();
     });
   
     return () => {
