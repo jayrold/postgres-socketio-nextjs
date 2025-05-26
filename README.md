@@ -26,6 +26,7 @@ Inspired by Supabase's realtime feature. I wanted to build a lightweight clone f
 - Type-safe API with tRPC
 - Modern UI with shadcn/ui components
 - Efficient database operations with Drizzle ORM
+- Real-time chat functionality with message history
 
 ## Architecture
 
@@ -49,6 +50,8 @@ The project consists of three main components:
    - Styled with Tailwind CSS
    - Database operations with Drizzle ORM
    - Server-side rendering and API routes
+   - Real-time chat interface with message persistence
+   - Message history and conversation management
 
 ## Quick Start
 
