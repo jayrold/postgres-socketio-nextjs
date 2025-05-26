@@ -35,6 +35,7 @@ async function start() {
 
   // Listen on channels you want (e.g. 'messages_changes')
   await pgClient.query('LISTEN messages_changes');
+  await pgClient.query('LISTEN "dynamic-table_chat_message_changes"');
   // Add more channels if needed
   // await pgClient.query('LISTEN posts_changes');
 

@@ -6,6 +6,9 @@
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![tRPC](https://img.shields.io/badge/tRPC-2596BE?style=for-the-badge&logo=trpc&logoColor=white)](https://trpc.io/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle-000000?style=for-the-badge&logo=drizzle&logoColor=white)](https://orm.drizzle.team/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge&logo=shadcnui&logoColor=white)](https://ui.shadcn.com/)
 
 ## About
 
@@ -20,6 +23,10 @@ Inspired by Supabase's realtime feature. I wanted to build a lightweight clone f
 - Real-time data synchronization
 - Scalable architecture
 - Easy setup with Docker Compose
+- Type-safe API with tRPC
+- Modern UI with shadcn/ui components
+- Efficient database operations with Drizzle ORM
+- Real-time chat functionality with message history
 
 ## Architecture
 
@@ -38,6 +45,13 @@ The project consists of three main components:
 3. **Next.js Frontend**
    - Real-time data updates
    - Table filtering and data visualization
+   - Type-safe API calls with tRPC
+   - Modern UI components with shadcn/ui
+   - Styled with Tailwind CSS
+   - Database operations with Drizzle ORM
+   - Server-side rendering and API routes
+   - Real-time chat interface with message persistence
+   - Message history and conversation management
 
 ## Quick Start
 
@@ -138,6 +152,10 @@ POSTGRES_DB=your_database
 - [ ] Add more table filtering options
 - [ ] Improve error handling and reconnection logic
 - [ ] Add unit and integration tests
+  - Unit tests for Socket.IO server logic
+  - Integration tests for PostgreSQL triggers and notifications
+  - End-to-end tests for real-time data synchronization
+  - Test coverage reporting
 - [ ] Implement data validation
 - [ ] Add rate limiting
 - [ ] Support for more database operations
